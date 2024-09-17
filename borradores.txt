@@ -1,0 +1,298 @@
+borrador sincrono
+module hex_4x4_keypad_encoder #(
+    parameter S0 = 3'd0,
+    parameter S1 = 3'd1,
+    parameter S2 = 3'd2,
+    parameter S3 = 3'd3,
+    parameter S4 = 3'd4,
+    parameter S5 = 3'd5
+)(
+    input clk,          // Reloj del sistema
+    input rst,          // Entrada de reset (activo en bajo, para usar en reset sincrónico)
+    input [3:0] row,    // Entrada de filas del teclado (4 bits)
+    output reg [3:0] col,  // Salida de columnas del teclado (4 bits)
+    output reg [3:0] button // Salida del botón (4 bits)
+);
+
+// Definición de señales internas
+reg [2:0] state, next_state; // Estado actual y siguiente estado de la FSM
+reg [7:0] key;              // Registro para almacenar el código de tecla
+
+// Lógica de transición de estado (sincrónica)
+always @(posedge clk) begin
+    if (!rst) begin
+        state <= next_state; // Actualiza el estado actual con el siguiente estado
+    end else begin
+        state <= S0;          // En caso de reset, inicializa el estado a S0
+    end
+end
+
+// Lógica para asignar las columnas según el estado
+always @(posedge clk) begin
+    if (!rst) begin
+        case (state)
+            S0: col <= 4'b1111;  // Todas las columnas desactivadas
+            S1: col <= 4'b0001;  // Activa la primera columna
+            S2: col <= 4'b0010;  // Activa la segunda columna
+            S3: col <= 4'b0100;  // Activa la tercera columna
+            S4: col <= 4'b1000;  // Activa la cuarta columna
+            S5: col <= 4'b1111;  // Todas las columnas desactivadas
+            default: col <= 4'b1111; // Valor por defecto
+        endcase
+    end else begin
+        col <= 4'b1111; // En caso de reset, desactiva todas las columnas
+    end
+end
+
+// Lógica para la detección de la tecla presionada
+always @(posedge clk) begin
+    if (!rst) begin
+        case (state)
+            S0: begin
+                if (!row) begin
+                    next_state <= S0; // Si no hay filas activas, permanece en S0
+                end else begin
+                    key[7:4] <= row;  // Captura las filas en el registro key
+                    next_state <= S1; // Cambia al estado S1
+                end
+            end
+            S1: begin
+                if (!row) begin
+                    next_state <= S2; // Cambia al estado S2 si no hay filas activas
+                end else begin
+                    key[3:0] <= col;  // Captura las columnas en el registro key
+                    next_state <= S5; // Cambia al estado S5
+                end
+            end
+            S2: begin
+                if (!row) begin
+                    next_state <= S3; // Cambia al estado S3 si no hay filas activas
+                end else begin
+                    key[3:0] <= col;  // Captura las columnas en el registro key
+                    next_state <= S5; // Cambia al estado S5
+                end
+            end
+            S3: begin
+                if (!row) begin
+                    next_state <= S4; // Cambia al estado S4 si no hay filas activas
+                end else begin
+                    key[3:0] <= col;  // Captura las columnas en el registro key
+                    next_state <= S5; // Cambia al estado S5
+                end
+            end
+            S4: begin
+                if (!row) begin
+                    next_state <= S5; // Cambia al estado S5 si no hay filas activas
+                end else begin
+                    key[3:0] <= col;  // Captura las columnas en el registro key
+                    next_state <= S5; // Cambia al estado S5
+                end
+            end
+            S5: begin
+                if (!row) begin
+                    next_state <= S0; // Cambia al estado S0 si no hay filas activas
+                end else begin
+                    next_state <= S5; // Permanece en el estado S5 si hay filas activas
+                end
+            end
+            default: next_state <= S0; // Valor por defecto
+        endcase
+    end
+end
+
+// Lógica para determinar el valor del botón presionado
+always @(posedge clk) begin
+    if (!rst) begin
+        case (key)
+            8'b00010001: button <= 4'd0;  // Mapea el código de tecla a un número
+            8'b00010010: button <= 4'd1;
+            8'b00010100: button <= 4'd2;
+            8'b00011000: button <= 4'd3;
+            8'b00100001: button <= 4'd4;
+            8'b00100010: button <= 4'd5;
+            8'b00100100: button <= 4'd6;
+            8'b00101000: button <= 4'd7;
+            8'b01000001: button <= 4'd8;
+            8'b01000010: button <= 4'd9;
+            8'b01000100: button <= 4'd10;
+            8'b01001000: button <= 4'd11;
+            8'b10000001: button <= 4'd12;
+            8'b10000010: button <= 4'd13;
+            8'b10000100: button <= 4'd14;
+            8'b10001000: button <= 4'd15;
+            default: button <= 4'd0;  // Valor por defecto si no coincide con ningún código
+        endcase
+    end else begin
+        button <= 4'd0; // En caso de reset, establece el botón a 0
+    end
+end
+
+endmodule
+
+ ///////////////////////////
+
+Borrador rebote 
+`timescale 1ns / 1ps
+
+module debounce (
+    input clk,            // Reloj del sistema
+    input rst,            // Entrada de reset (activo en bajo)
+    input btn_in,        // Entrada del botón (señal sin debounce)
+    output reg btn_out   // Salida del botón (señal debounced)
+);
+
+// Parámetros para el debounce
+parameter DEBOUNCE_TIME = 20_000_000; // 20 ms para un reloj de 50 MHz (ajustar según tu reloj)
+
+// Definición de señales internas
+reg [31:0] counter;   // Contador para el tiempo de debounce
+reg btn_in_d, btn_in_d2; // Señales de botón con retardo
+
+// Lógica de sincronización del botón de entrada
+always @(posedge clk) begin
+    if (!rst) begin
+        btn_in_d <= btn_in;  // Retardo de 1 ciclo de reloj
+        btn_in_d2 <= btn_in_d; // Retardo de 2 ciclos de reloj
+    end else begin
+        btn_in_d <= 1'b0; // Estado inicial en reset
+        btn_in_d2 <= 1'b0; // Estado inicial en reset
+    end
+end
+
+// Lógica de debounce sincrónica
+always @(posedge clk) begin
+    if (!rst) begin
+        if (btn_in_d2 == btn_in_d) begin
+            if (counter < DEBOUNCE_TIME) begin
+                counter <= counter + 1; // Incrementa el contador
+            end else begin
+                btn_out <= btn_in_d; // Si el tiempo de debounce ha pasado, actualiza la salida
+            end
+        end else begin
+            counter <= 0; // Reinicia el contador si el botón cambia
+        end
+    end else begin
+        counter <= 0; // Reinicia el contador en reset
+        btn_out <= 1'b0; // Estado inicial en reset
+    end
+end
+
+endmodule
+
+///////////////////////////////////////////////////
+
+
+Modulo principal 
+`timescale 1ns / 1ps
+
+module main (
+    input clk,                // Reloj del sistema
+    input rst,                // Entrada de reset (activo en bajo)
+    input [3:0] row,          // Entrada de filas del teclado (4 bits)
+    output [3:0] col,         // Salida de columnas del teclado (4 bits)
+    output [3:0] button       // Salida del botón (4 bits)
+);
+
+// Señales internas
+wire [3:0] debounced_row;   // Señales de filas después de debounce
+
+// Instancia del módulo debounce
+debounce #(
+    .DEBOUNCE_TIME(20_000_000) // Ajusta este valor según la frecuencia del reloj
+) debounce_inst (
+    .clk(clk),
+    .rst(rst),
+    .btn_in(row[0]),  // Asume que `row` es un bus de 4 bits y solo debouncing para `row[0]`
+    .btn_out(debounced_row[0]) // Salida del debounce para `row[0]`
+);
+
+// Instancias de los módulos hex_4x4_keypad_encoder
+hex_4x4_keypad_encoder keypad_encoder (
+    .rst(rst),
+    .clk(clk),
+    .row(debounced_row), // Usa las filas debounced
+    .col(col),           // Salida de las columnas del teclado
+    .button(button)      // Salida del botón
+);
+
+endmodule
+
+////////////////
+
+
+borrador testbench 
+
+`timescale 1ns / 1ps
+
+module tb_main;
+
+// Parámetros del reloj y reset
+parameter CLK_PERIOD = 10; // Período del reloj en nanosegundos (100 MHz)
+parameter DEBOUNCE_TIME = 20_000_000; // Tiempo de debounce en ciclos de reloj (ajustar según tu reloj)
+
+// Señales del testbench
+reg clk;
+reg rst;
+reg [3:0] row;
+wire [3:0] col;
+wire [3:0] button;
+
+// Instancia del módulo principal
+main #(
+    .DEBOUNCE_TIME(DEBOUNCE_TIME)
+) uut (
+    .clk(clk),
+    .rst(rst),
+    .row(row),
+    .col(col),
+    .button(button)
+);
+
+// Generador del reloj
+initial begin
+    clk = 0;
+    forever #(CLK_PERIOD / 2) clk = ~clk;
+end
+
+// Generador del reset y estímulo
+initial begin
+    // Inicialización
+    rst = 1;
+    row = 4'b1111;
+    #100; // Mantener reset activo por 100 ns
+    rst = 0;
+
+    // Prueba de botones
+    // Prueba con fila 0 (row[0])
+    #50 row = 4'b1110; // Simula presión de botón en la primera fila
+    #200 row = 4'b1111; // Liberar botón
+    #100; // Esperar
+
+    // Prueba con fila 1 (row[1])
+    #50 row = 4'b1101; // Simula presión de botón en la segunda fila
+    #200 row = 4'b1111; // Liberar botón
+    #100; // Esperar
+
+    // Prueba con fila 2 (row[2])
+    #50 row = 4'b1011; // Simula presión de botón en la tercera fila
+    #200 row = 4'b1111; // Liberar botón
+    #100; // Esperar
+
+    // Prueba con fila 3 (row[3])
+    #50 row = 4'b0111; // Simula presión de botón en la cuarta fila
+    #200 row = 4'b1111; // Liberar botón
+    #100; // Esperar
+
+    // Finalizar simulación
+    #100;
+    $finish;
+end
+
+// Monitoreo de señales
+initial begin
+    $monitor("Time = %0t, row = %b, col = %b, button = %b", $time, row, col, button);
+end
+
+endmodule
+ 
+
