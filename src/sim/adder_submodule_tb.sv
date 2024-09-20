@@ -90,7 +90,7 @@ module adder_submodule_tb;
     // Generar el archivo dumpfile para ver las señales en una herramienta gráfica (como GTKWave)
     initial begin
         $dumpfile("adder_submodule_tb.vcd"); // Nombre del archivo VCD
-        $dumpvars(0, adder_submodule_tb);    // Volcar todas las señales del testbench
+        $dumpvars(1, clk, reset, number1, number2, start_suma, sum, valid);    // Volcar todas las señales del testbench
     end
 
 endmodule
