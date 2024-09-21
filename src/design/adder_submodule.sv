@@ -4,7 +4,7 @@ module adder_submodule (
     input logic [11:0] number1, 
     input logic [11:0] number2,
     input logic enable, 
-    output logic [13:0] sum_result, //Resultado de la suma
+    output logic [11:0] sum_result, //Resultado de la suma
     output logic sum_state          //Estado de la suma (finalizada o no)
 );
 

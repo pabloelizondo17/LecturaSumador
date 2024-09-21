@@ -7,7 +7,7 @@ module adder_submodule_tb;
     logic enable;
     logic [11:0] number1;
     logic [11:0] number2;
-    logic [13:0] sum;
+    logic [11:0] sum;
     logic valid;
 
     adder_submodule uut (
