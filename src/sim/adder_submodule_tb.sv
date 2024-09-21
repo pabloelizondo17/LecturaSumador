@@ -2,95 +2,71 @@
 
 module adder_submodule_tb;
 
-    // Señales para probar el módulo adder_submodule
     logic clk;
     logic reset;
-    logic [11:0] number1;       // Primer número de 3 dígitos decimales
-    logic [11:0] number2;       // Segundo número de 3 dígitos decimales
-    logic start_suma;           // Señal para iniciar la suma
-    logic [13:0] sum;           // Resultado de la suma (hasta 4 dígitos decimales)
-    logic valid;                // Señal que indica si la suma está lista
+    logic enable;
+    logic [11:0] number1;
+    logic [11:0] number2;
+    logic [13:0] sum;
+    logic valid;
 
-    // Instancia del módulo bajo prueba (UUT - Unit Under Test)
     adder_submodule uut (
         .clk(clk),
         .reset(reset),
         .number1(number1),
         .number2(number2),
-        .start_suma(start_suma),
-        .sum(sum),
-        .valid(valid)
+        .enable(enable),
+        .sum_result(sum),
+        .sum_state(valid)
     );
 
-    // Generar la señal de reloj (clk)
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;  // Alternar el valor del reloj cada 5 unidades de tiempo (10 ns de período total)
-    end
+    always #18.52 clk = ~clk; // Periodo de 37.04 ns (27 MHz)
 
-    // Proceso de simulación
+    // Proceso para la simulación
     initial begin
-        // Inicializar las señales
-        reset = 1;               // Activar reset al inicio
-        start_suma = 0;
+        $dumpfile("adder_submodule_tb.vcd");
+        $dumpvars(0, adder_submodule_tb);
+
+        clk = 0;
+        reset = 1;
+        enable = 0;
         number1 = 12'd0;
         number2 = 12'd0;
 
-        // Esperar algunos ciclos de reloj
         #10;
-        reset = 0;               // Desactivar reset después de 10 ns
-        #10;
+        reset = 0;
+        
+        // Caso de prueba 1: Sumar 1000 + 2000
+        number1 = 12'd367;
+        number2 = 12'd980;
+        enable = 1;
+        #38;
+        $display("Time: %0t, Number1: %0d, Number2: %0d, Sum: %0d, Valid: %b", 
+        $time, number1, number2, sum, valid);
+        enable = 0;
+        #20;
 
-        // Probar la suma de algunos números
+        // Caso de prueba 2: Sumar 3000 + 1500
+        number1 = 12'd300;
+        number2 = 12'd157;
+        enable = 1;
+        #38;
+        $display("Time: %0t, Number1: %0d, Number2: %0d, Sum: %0d, Valid: %b", 
+        $time, number1, number2, sum, valid);
+        enable = 0;
+        #20;
 
-        // Caso 1: Suma de 123 + 456
-        number1 = 12'd123;
-        number2 = 12'd456;
-        start_suma = 1;
-        #10 start_suma = 0;      // Detener el start después de 1 ciclo
-        #10;
-        wait (valid);            // Esperar hasta que la suma esté lista
-        $display("Suma 123 + 456 = %d", sum);
-        #10;
-
-        // Caso 2: Suma de 999 + 999 (caso borde)
+        // Caso de prueba 3: Sumar 4095 + 4095 (máximo valor)
         number1 = 12'd999;
-        number2 = 12'd999;
-        start_suma = 1;
-        #10 start_suma = 0;      // Detener el start después de 1 ciclo
-        #10;
-        wait (valid);            // Esperar hasta que la suma esté lista
-        $display("Suma 999 + 999 = %d", sum);
-        #10;
+        number2 = 12'd850;
+        enable = 1;
+        #38;
+        $display("Time: %0t, Number1: %0d, Number2: %0d, Sum: %0d, Valid: %b", 
+        $time, number1, number2, sum, valid);
+        enable = 0;
+        #20;
 
-        // Caso 3: Suma de 234 + 765
-        number1 = 12'd234;
-        number2 = 12'd765;
-        start_suma = 1;
-        #10 start_suma = 0;      // Detener el start después de 1 ciclo
-        #10;
-        wait (valid);            // Esperar hasta que la suma esté lista
-        $display("Suma 234 + 765 = %d", sum);
-        #10;
-
-        // Caso 4: Suma de 567 + 432
-        number1 = 12'd567;
-        number2 = 12'd432;
-        start_suma = 1;
-        #10 start_suma = 0;      // Detener el start después de 1 ciclo
-        #10;
-        wait (valid);            // Esperar hasta que la suma esté lista
-        $display("Suma 567 + 432 = %d", sum);
-        #10;
-
-        // Finalizar simulación
-        $stop;
-    end
-
-    // Generar el archivo dumpfile para ver las señales en una herramienta gráfica (como GTKWave)
-    initial begin
-        $dumpfile("adder_submodule_tb.vcd"); // Nombre del archivo VCD
-        $dumpvars(1, clk, reset, number1, number2, start_suma, sum, valid);    // Volcar todas las señales del testbench
+        $finish;
     end
 
 endmodule
