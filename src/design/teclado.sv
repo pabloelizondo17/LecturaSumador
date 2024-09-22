@@ -96,22 +96,22 @@ end
 always @(posedge clk) begin
     if (state == S5 && row != 4'b1111) begin
         case (key)
-            8'b00010001: button <= 4'd0;
-            8'b00010010: button <= 4'd1;
-            8'b00010100: button <= 4'd2;
-            8'b00011000: button <= 4'd3;
-            8'b00100001: button <= 4'd4;
-            8'b00100010: button <= 4'd5;
-            8'b00100100: button <= 4'd6;
-            8'b00101000: button <= 4'd7;
-            8'b01000001: button <= 4'd8;
-            8'b01000010: button <= 4'd9;
-            8'b01000100: button <= 4'd10;
-            8'b01001000: button <= 4'd11;
-            8'b10000001: button <= 4'd12;
-            8'b10000010: button <= 4'd13;
-            8'b10000100: button <= 4'd14;
-            8'b10001000: button <= 4'd15;
+            8'b00101000: button <= 4'd0; //Tecla 0
+            8'b00010001: button <= 4'd0; //Tecla 1
+            8'b00100001: button <= 4'd2; //Tecla 2
+            8'b01000001: button <= 4'd3; //Tecla 3
+            8'b00010010: button <= 4'd4; //Tecla 4
+            8'b00100010: button <= 4'd5; //Tecla 5
+            8'b01000010: button <= 4'd6; //Tecla 6
+            8'b00010100: button <= 4'd7; //Tecla 7
+            8'b00100100: button <= 4'd8; //Tecla 8
+            8'b01000100: button <= 4'd9; //Tecla 9
+            //8'b00010100: button <= 4'd10;
+            //8'b01001000: button <= 4'd11;
+            //8'b10000001: button <= 4'd12;
+            //8'b10000010: button <= 4'd13;
+            //8'b10000100: button <= 4'd14;
+            //8'b10001000: button <= 4'd15;
             default: button <= 4'd0;
         endcase
     end
