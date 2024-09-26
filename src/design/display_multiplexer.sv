@@ -26,7 +26,7 @@ module display_multiplexer(
             current_display <= 0;
         end else begin
             refresh_counter <= refresh_counter + 1;
-            if (refresh_counter == 100000) begin  // Cambia de display cada cierto tiempo
+            if (refresh_counter == 1000) begin  // Cambia de display cada cierto tiempo
                 refresh_counter <= 0;
                 current_display <= current_display + 1; // Pasa al siguiente display
             end

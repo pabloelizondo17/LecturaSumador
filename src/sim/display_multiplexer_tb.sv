@@ -35,22 +35,29 @@ module display_multiplexer_tb;
         // Espera unos ciclos y luego quita el reset
         #10 reset = 0;
 
-        // Test con el primer número binario
+        // Test con el primer número binario (espera suficiente tiempo para recorrer todos los displays)
         sum_result = 14'b00000000001100;  // Prueba con el binario de 12
-        #100000; // Simula un tiempo suficiente para observar cambios
+        #29900; // Simula más tiempo para que el multiplexor muestre todos los dígitos
 
         // Test con el segundo número binario
         sum_result = 14'b00001111100111;  // Prueba con el binario de 999
-        #100000;
+        #29900; // Simula más tiempo para que el multiplexor muestre todos los dígitos
 
         // Finaliza la simulación
         $finish;
     end
 
-    // Monitoreo de las salidas para imprimir en pantalla
+    // Monitoreo de las salidas: solo imprime cuando cambian las señales de interés
     initial begin
-        $monitor("Time = %0t, display_select = %b, segments = %b", 
-                 $time, display_select, segments);
+        $monitor("Time = %0t, sum_result = %b, display_select = %b, segments = %b", 
+                 $time, sum_result, display_select, segments);
     end
 
+    // Imprimir solo cuando el display_select cambia
+    always @(posedge clk) begin
+        if (display_select !== uut.display_select || segments !== uut.segments) begin
+            $display("Time = %0t, sum_result = %b, display_select = %b, segments = %b", 
+                     $time, sum_result, display_select, segments);
+        end
+    end
 endmodule
