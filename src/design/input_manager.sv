@@ -47,11 +47,6 @@ module input_manager (
     // Combina las entradas en number_out
     assign number_out = (hundreds * 100) + (tens * 10) + units; // Combina los valores adecuadamente
 
-   always_comb begin
-    if (ready) begin
-        $display("Centenas: %b, Decenas: %b, Unidades: %b", hundreds, tens, units);
-    end
-end
 
 endmodule
 
