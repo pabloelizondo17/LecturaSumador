@@ -1,4 +1,4 @@
-module tb_input_manager;
+module input_manager_tb;
     logic clk;
     logic reset;
     logic [3:0] dip_switch;

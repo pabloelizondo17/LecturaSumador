@@ -15,15 +15,15 @@ SOURCES := $(wildcard ../design/*.v ../design/*.sv) #Todas las fuentes .v o .sv 
 
 #Fuente de simulacion
 #aca va el testbench que quieran simular
-TESTBENCH = ../sim/adder_submodule_tb.sv
+TESTBENCH = ../sim/input_manager_tb.sv
 
 # Constraints para el proyecto
 #aca va el archivo de constraints del proyecto
 CONSTRAINTS = ../constr/adder_submodule.cst
 
 #el top se indica sin la extension .v, esto hace referencia al nombre que le pusieron al módulo y no al archivo en si.
-TOP_DESIGN = adder_submodule
-TOP_TB     = adder_submodule_tb
+TOP_DESIGN = input_manager
+TOP_TB     = input_manager_tb
 
 #nombre del vcd que va a generar el tb
 VCD_FILE = adder_submodule_tb.vcd
