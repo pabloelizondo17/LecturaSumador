@@ -10,7 +10,7 @@ module top_module (
 
     // Señales internas
     logic [11:0] number1, number2, sum_result;
-    logic ready1, ready2, sum_ready;
+    logic ready1, ready2, enable_adder,sum_ready;
     logic [1:0] state;
 
     // Máquina de estados: 3 estados para gestionar la entrada, suma y despliegue
@@ -48,7 +48,7 @@ module top_module (
         .reset(reset),
         .number1(number1),
         .number2(number2),
-        .enable(ready1 & ready2), // Solo permite la suma cuando ambos números están listos
+        .enable(enable_adder), 
         .sum_result(sum_result),
         .sum_state(sum_ready)
     );
@@ -72,6 +72,7 @@ module top_module (
     end
 
     always_comb begin
+        enable_adder = 1'b0;
         next_state = current_state; // Por defecto, mantén el estado actual
         case (current_state)
             IM: begin
@@ -82,6 +83,7 @@ module top_module (
             end
             ADD: begin
                 // Si la suma está lista, pasa al estado de despliegue
+                enable_adder = 1'b1;
                 if (sum_ready) begin
                     next_state = DISPLAY;
                 end

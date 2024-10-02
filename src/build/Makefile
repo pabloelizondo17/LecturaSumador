@@ -26,7 +26,7 @@ TOP_DESIGN = top_module
 TOP_TB     = top_module_tb
 
 #nombre del vcd que va a generar el tb
-VCD_FILE = adder_submodule_tb.vcd
+VCD_FILE = module_Top_tb.vcd
 
 
 all: synth pnr bitstream load
