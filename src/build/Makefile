@@ -31,11 +31,18 @@ VCD_FILE = module_Top_tb.vcd
 
 all: synth pnr bitstream load
 
-# Synthesis
+#Synthesis
 synth: ${SOURCES}
 	@echo "Ejecutando la sintesis..."
 	@yosys -p "read_verilog -sv ${SOURCES}; synth_gowin -top ${TOP_DESIGN} -json ${PROYECT}.json" > synthesis_${BOARD}.log 2>&1 
 	@echo "COMPLETADO"
+
+# Synthesis with optimizations
+#synth: ${SOURCES}
+#	@echo "Ejecutando la sintesis con optimizacion..."
+#	@yosys -p "read_verilog -sv ${SOURCES}; opt_clean -purge; opt_merge; opt_share; abc -fast; synth_gowin -top ${TOP_DESIGN} -json ${PROYECT}.json" > synthesis_${BOARD}.log 2>&1
+#	@echo "COMPLETADO"
+
 
 # Place and Route
 pnr: ${PROYECT}.json

@@ -64,7 +64,7 @@ module top_module_tb;
         #10 input_ready2 = 0;
 
         // Esperar a que la suma se complete y se muestre el resultado
-        #10000000;
+        #1000000;
         $finish;
     end
         

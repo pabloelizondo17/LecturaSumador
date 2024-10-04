@@ -16,6 +16,7 @@ module display_multiplexer(
         tens = (sum_result % 100) / 10;               // Separa decenas
         units = sum_result % 10;                      // Separa unidades
     end
+    //double dabble
 
     always_ff @(posedge clk or posedge reset) begin   // Contador de refresco
         if (reset) begin
