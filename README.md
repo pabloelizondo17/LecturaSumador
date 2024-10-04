@@ -15,3 +15,11 @@ Todo lo anterior, tiene como principales objetivos el poder comprender el proces
 
 
 ## Descripción del funcionamiento general y de sus subsistemas
+
+### Módulo principal (Top)
+
+### Subsistema de lectura y procesamiento de datos
+
+### Subsistema de suma aritmética 
+
+### Subsistema de procesamiento de datos y despliegue en displays de 7 segmentos
