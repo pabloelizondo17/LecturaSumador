@@ -15,10 +15,23 @@ Todo lo anterior, tiene como principales objetivos el poder comprender el proces
 
 
 ## Descripción del funcionamiento general y de sus subsistemas
+Como ya se mencionó en los apartados anteriores, el proyecto cuenta con varios submódulos que cumplen funciones diferentes y específicas. Desde la recepción y el procesamiento de señales, hasta los cálculos aritméticos y el despliegue de los datos. Se muestra a continuación una descripción del funcionamiento de cada uno de estos.
 
 ### Módulo principal (Top)
+Este es el módulo que conecta todos los demás, recibe las señales, las analiza y las asigna a cada uno de los otros submódulos.
+El módulo se instancia con las siguientes señales:
+
+![image](https://github.com/user-attachments/assets/b0fdab35-c0df-461b-b482-8ffd5a50e574)
+
+Y se conecta por ejemplo de la siguiente manera, con el módulo que maneja la entrada de señales provenientes del switch:
+
+![image](https://github.com/user-attachments/assets/341e491c-cf36-4708-bb38-5a7c50ab0cd8)
+
 
 ### Subsistema de lectura y procesamiento de datos
+
+
+
 
 ### Subsistema de suma aritmética 
 
