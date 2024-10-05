@@ -46,3 +46,23 @@ Este subsistema tiene que corroborar ciertos aspectos antes y después de aplica
 
 
 ### Subsistema de procesamiento de datos y despliegue en displays de 7 segmentos
+
+Finalmente se encuentra el subsistema que procesa los datos del resultado de la suma y lo prepara para poderse mostrar en 4 displays de 7 segmentos. Se necesita de al menos 4 displays de 7 segmentos pues el máximo resultado de la suma que se puede obtener, es un número decimal de 4 cifras que corresponde al número 1998. 
+
+Este proceso de poder mostar el resultado de la suma en los displays conlleva varios pasos. Primero se debe de recibir el resultado de la suma y separar sus dígitos en unidades, decenas, centenas y miles (según sea necesario), esto debido a que hay un display para cada posición mencionada. Luego hay un "flip-flop" que sirve como contador para actualizar el display encendido y el código que se le va a enviar a dicho display, esto se hace porque como se trabaja con 4 displays entonces se pueden multiplexar para así ahorrar espacio y componentes electrónicos, de forma que solo estará un único display encendido a la vez, pero como cambian tan rápido el ojo humano no es capaz de darse cuenta de estos cambios entre cada display. 
+
+El contador va cambiando de display conforme se actualiza, con lo cual luego es necesario hacer el siguiente paso, que es definir cuál de los 4 displays está encendido y en base a eso determinar si el código que se le enviará será para el dígito de las unidades, de las decenas, centenas o miles. Según se muestra.
+
+![image](https://github.com/user-attachments/assets/a78a0da6-47ef-4e3c-89ef-63f65a7d7298)
+
+Una vez que ya estén definidos los dos aspectos anteriores, solo resta codificar el dígito que se va ha mostrar en el código para el display de 7 segmentos, según se muestra a continuación.
+
+![image](https://github.com/user-attachments/assets/316fd4d1-1a5f-4858-89f7-f03f2831d194)
+
+Finalmente, el subsistema lanza como salida la variable segments que contiene el código adecuado para mostar en los displays el dígito que corresponda para cada instante de tiempo y el proceso se vuelve a repetir para cada uno de los dígitos de la suma. Así, el resultado final será poder observar los cuatro displays encendidos al mismo tiempo desplegando el resultado de la suma de los valores ingresados por medio del deep switch. 
+
+
+
+
+
+
