@@ -18,6 +18,12 @@ Todo lo anterior, tiene como principales objetivos el poder comprender el proces
 Como ya se mencionó en los apartados anteriores, el proyecto cuenta con varios submódulos que cumplen funciones diferentes y específicas. Desde la recepción y el procesamiento de señales, hasta los cálculos aritméticos y el despliegue de los datos. Se muestra a continuación una descripción del funcionamiento de cada uno de estos.
 
 ### Módulo principal (Top)
+
+![image](https://github.com/user-attachments/assets/d91e8686-e275-479d-876f-910daa53726b)
+
+![image](https://github.com/user-attachments/assets/80597bea-7254-4133-a907-1401a045c3a0)
+
+
 Este es el módulo que conecta todos los demás, recibe las señales, las analiza y las asigna a cada uno de los otros submódulos.
 El módulo se instancia con las siguientes señales:
 
@@ -31,6 +37,11 @@ De la misma manera como se conecta con el módulo que procesa la entrada de los 
 
 
 ### Subsistema de lectura y procesamiento de datos
+
+![Flujo  input](https://github.com/user-attachments/assets/11c4a9d8-690e-4d1e-9a1c-62372f4410f2)
+
+![FSM_Input](https://github.com/user-attachments/assets/d547c2e3-5997-447b-8448-a25791cd99da)
+
 Este submódulo llamado en el archivo como input_manager.sv, es el que va registrando los datos que se van ingresando con el deep switch, utiliza las siguientes variables.
 
 ![image](https://github.com/user-attachments/assets/5a905371-b0c0-4ad9-a983-6df795f74c65)
@@ -38,6 +49,9 @@ Este submódulo llamado en el archivo como input_manager.sv, es el que va regist
 Como el sistema lo que hace es ir recogiendo cada una de las cifras que van a componer el número por separado, se utiliza un "case" dentro de un "flip-flop" de forma que se recolectan las centenas primeramente, luego las decenas y finalmente las unidades, se va actualizando el valor de la variable state para corroborar cuáles dígitos son los que se han ingresado. Finalmente se levanta una bandera para indicar que se ingresaron y registraron correctamente los tres dígitos de uno de los dos números y se procede a formar el número decimal de tres cifras, para luego enviarlo al módulo principal (Top) y que el número sea procesado por el sumador. El mismo proceso se repite para el segundo número y en caso de querer restablecer todo y volver al inicio, se puede presionar el botón de reset. 
 
 ### Subsistema de suma aritmética 
+
+![Flujo adder](https://github.com/user-attachments/assets/0c4db3af-e364-45c7-8181-0f60833427a4)
+
 Este subsistema es el encargado de recibir y sumar los dos números formados por el subsistema de lectura y procesamiento de datos. Su estructura es relativamente corta, según se muestra a continuación.
 
 ![image](https://github.com/user-attachments/assets/27db97cd-fa0a-4003-a08f-6e1cc948d76c)
@@ -46,6 +60,8 @@ Este subsistema tiene que corroborar ciertos aspectos antes y después de aplica
 
 
 ### Subsistema de procesamiento de datos y despliegue en displays de 7 segmentos
+
+![Flujo display](https://github.com/user-attachments/assets/d40a68e3-a44f-4752-8bcb-9110c037df04)
 
 Finalmente se encuentra el subsistema que procesa los datos del resultado de la suma y lo prepara para poderse mostrar en 4 displays de 7 segmentos. Se necesita de al menos 4 displays de 7 segmentos pues el máximo resultado de la suma que se puede obtener, es un número decimal de 4 cifras que corresponde al número 1998. 
 
