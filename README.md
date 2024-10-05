@@ -62,6 +62,48 @@ Una vez que ya estén definidos los dos aspectos anteriores, solo resta codifica
 Finalmente, el subsistema lanza como salida la variable segments que contiene el código adecuado para mostar en los displays el dígito que corresponda para cada instante de tiempo y el proceso se vuelve a repetir para cada uno de los dígitos de la suma. Así, el resultado final será poder observar los cuatro displays encendidos al mismo tiempo desplegando el resultado de la suma de los valores ingresados por medio del deep switch. 
 
 
+## Analisis de la simulación
+
+En esta simulación del top_module, se observa el comportamiento de un sistema diseñado para recibir entradas a través de un dip switch, sumar los valores obtenidos y desplegar el resultado en un display de 7 segmentos. A continuación, se detalla el análisis de las señales y el funcionamiento del sistema en el instante capturado en la simulación.
+
+![Descripción de la Imagen](imagenes/WV_sumador.png)
+
+El sistema opera sincronizado por una señal de reloj (clk), la cual se encuentra en estado bajo (0) en el momento capturado. Este reloj controla la máquina de estados finita (FSM) del sistema, que en este caso está en el estado 10 en binario, correspondiente al estado 2 en decimal. Este estado es clave en la operación de suma, ya que coincide con la fase en la que las señales de entrada han sido capturadas y la suma ha sido realizada.
+
+El valor capturado por el dip switch (dip_switch[3:0]) es 8 en hexadecimal, lo que corresponde a 1000 en binario. Este valor es procesado por el input model del sistema, que produce dos números a partir de las entradas: number1 = 075 (hexadecimal, equivalente a 117 en decimal) y number2 = 3E6 (hexadecimal, equivalente a 998 en decimal). Ambos números están listos para la operación de suma, como lo indica el estado de las señales de preparación de entrada (input_ready1 y input_ready2), ambas en 1.
+
+El sumador ha procesado correctamente estos dos números, generando un resultado de 45B en hexadecimal, equivalente a 1115 en decimal. Este resultado ha sido almacenado en el registro de suma (sum_reg) y está listo para ser mostrado en el display, lo que es confirmado por la activación de la señal sum_ready, también en 1.
+
+La lógica de control del display se gestiona a través de la señal display_select[3:0], que en este caso tiene un valor de E (hexadecimal). Esta señal determina cuál de las tres posiciones (unidades, decenas o centenas) será actualizada en el display. El valor que se está mostrando actualmente en el display es 00 (hexadecimal), lo cual sugiere que en este instante el sistema está en un ciclo de refresco o en una fase intermedia antes de actualizar la información visual.
+
+En cuanto a los segmentos del display, el valor observado en la señal segments[6:0] = 5B indica que un número específico se está desplegando, como parte de la representación del resultado. De manera adicional, los valores de las unidades (units[3:0] = 5), decenas (tens[3:0] = 1) y centenas (hundreds[3:0] = 1) están procesando adecuadamente el valor 1115, que es el resultado final de la suma.
+
+Finalmente, la señal refresh_counter tiene un valor de 0000F (hexadecimal), esta relacionado con la lógica de refresco del display, asegurando que las posiciones correspondientes a unidades, decenas y centenas se actualicen correctamente de acuerdo con el valor a mostrar.
+
+## Analisis del consumo
+
+A continuación, se presenta el analisis del consumo de recursos lógicos (LUTs, FFs, etc.) reportado por las herramientas de diseño al implementar el proyecto en la FPGA Tang Nano 9K. Este análisis es crucial para entender los límites del dispositivo y determinar si el diseño es viable o requiere ajustes para optimizar su eficiencia.
+
+![Descripción de la Imagen](imagenes/recurso.png)
+
+El diseño en la FPGA Tang Nano 9K excede drásticamente sus capacidades lógicas. El principal problema es el uso excesivo de SLICEs, alcanzando un 520% de la capacidad total disponible, con 44944 SLICEs utilizados frente a los 8640 disponibles. Esta es la limitación más crítica.
+
+![Descripción de la Imagen](imagenes/recursos.png)
+
+Las LUTs también están significativamente sobreutilizadas. El uso de MUX2_LUT5 es del 264%, con 11430 unidades disponibles en lugar de las 4320 permitidas. MUX2_LUT6 y MUX2_LUT7 también superan la capacidad con un 263% y un 261%, respectivamente. Este alto consumo de LUTs indica una complejidad notable en las operaciones combinacionales, impidiendo una implementación eficiente en la FPGA.
+
+Respecto a los flip-flops (FFs), aunque no se detalla su número exacto, no se menciona una sobreutilización crítica, lo que sugiere que se están utilizando de manera más eficiente en comparación con las LUTs.
+
+El uso de bloques de entrada/salida (IOBs) es mínimo, con solo un 6% de la capacidad total (19 de 274) utilizada. Esto sugiere que el diseño no enfrenta limitaciones en las interfaces de entrada/salida, sino que la restricción principal proviene de la lógica interna.
+
+
+En cuanto al consumo de potencia, aunque no se proporciona un desglose específico, basadas en el uso de recursos, se puede asumir que: 
+
+Consumo Dinámico: Este se relaciona con la cantidad de LUTs, FFs y otros elementos activos. Dado el exceso de LUTs, el consumo dinámico es probablemente muy alto, ya que cada LUT activa consume potencia durante las operaciones lógicas. Esto coloca al diseño por encima de la capacidad manejable de la FPGA.
+
+Consumo Estático: Este consumo, que ocurre en reposo, es normalmente menor y depende de la tecnología de fabricación y la configuración de recursos de la FPGA. Aunque el consumo estático sería normal, su impacto se ve eclipsado por el elevado consumo dinámico.
+
+
 
 
 
