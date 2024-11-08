@@ -119,6 +119,13 @@ Consumo Dinámico: Este se relaciona con la cantidad de LUTs, FFs y otros elemen
 
 Consumo Estático: Este consumo, que ocurre en reposo, es normalmente menor y depende de la tecnología de fabricación y la configuración de recursos de la FPGA. Aunque el consumo estático sería normal, su impacto se ve eclipsado por el elevado consumo dinámico.
 
+## Análisis de velocidades de operación
+El diseño fue implementado con un reloj de operación de 27 MHz, el cual es fundamental para controlar el correcto funcionamiento del sistema. Dentro del módulo display_multiplexer, el reloj sincroniza el proceso de refresco de los displays, lo que asegura que se muestren correctamente las unidades, decenas, centenas y miles del resultado.
+
+El flip-flop dentro del módulo controla un contador de refresco de 20 bits, que incrementa su valor en cada ciclo de reloj. Cuando el contador alcanza 10,000 ciclos, se reinicia y avanza al siguiente display (unidades, decenas, centenas o miles). Esto garantiza que cada display se actualice de manera cíclica, permitiendo que el número completo se muestre en los displays de 7 segmentos, alternando rápidamente entre ellos.
+
+El aumentar la velocidad del reloj tendría implicaciones importantes, ya que reduciría el tiempo entre las actualizaciones del contador de refresco, lo que podría hacer que el ciclo de displays fuera demasiado rápido para que el ojo humano los perciba adecuadamente. Además, aumentar la frecuencia de reloj implica un mayor consumo energético y provocar problemas de temporización dentro del diseño.
+ 
 
 
 
