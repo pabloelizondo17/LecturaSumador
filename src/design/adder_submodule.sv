@@ -3,9 +3,9 @@ module adder_submodule (
     input logic reset,           
     input logic [11 : 0] number1,        // Entrada de 12 bits máximo
     input logic [11 : 0] number2,        // Entrada de 12 bits máximo
-    input logic enable,                  // Señal de habilitación (se puede hacer la suma o no)
+    input logic enable,                  // Señal de habilitación 
     output logic [11 : 0] sum_result,    // Resultado de 12 bits máximo
-    output logic sum_state               // Estado de la suma (finalizada o no)
+    output logic sum_state               // Estado de la suma 
 );
 
     logic [11 : 0] sum_reg = 12'b0;     // Registro temporal de 12 bits máximo

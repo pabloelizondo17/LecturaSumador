@@ -73,7 +73,7 @@ module top_module (
 
     always_comb begin
         enable_adder = 1'b0;
-        next_state = current_state; // Por defecto, mantén el estado actual
+        next_state = current_state; 
         case (current_state)
             IM: begin
                 // Si ambos números están listos, pasa al estado de suma
@@ -89,8 +89,8 @@ module top_module (
                 end
             end
             DISPLAY: begin
-                // Mantén el estado de despliegue indefinidamente o resetea manualmente
-                next_state = DISPLAY; // Podría agregar una lógica para reiniciar el proceso si es necesario
+                // Mantén el estado de despliegue 
+                next_state = DISPLAY; 
             end
             default: next_state = IM;
         endcase

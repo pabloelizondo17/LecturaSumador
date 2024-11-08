@@ -50,6 +50,8 @@ pnr: ${PROYECT}.json
 	@nextpnr-gowin --json ${PROYECT}.json --write ${PROYECT}_pnr.json --freq 27 --device ${DEVICE} --family ${FAMILY} --cst ${CONSTRAINTS} > pnr_${BOARD}.log 2>&1 
 	@echo "COMPLETADO"
 
+
+
 # Generar el Bitstream
 bitstream: ${PROYECT}_pnr.json
 	@echo "Generando ${PROYECT}_${BOARD}.fs"

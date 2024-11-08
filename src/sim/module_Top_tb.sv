@@ -23,7 +23,7 @@ module top_module_tb;
     );
 
     // Generar el reloj (clock) con un periodo de 10 ns
-    always #5 clk = ~clk;
+    always #1 clk = ~clk;
 
     // Secuencia de prueba
     initial begin
@@ -46,7 +46,7 @@ module top_module_tb;
         input_ready1 = 1;
         #10 input_ready1 = 0;
 
-        #10 dip_switch = 4'd7;  // Ingresar 1 como unidades
+        #10 dip_switch = 4'd7;  // Ingresar 7 como unidades
         input_ready1 = 1;
         #10 input_ready1 = 0;
 
@@ -64,7 +64,7 @@ module top_module_tb;
         #10 input_ready2 = 0;
 
         // Esperar a que la suma se complete y se muestre el resultado
-        #1000000;
+        #100;
         $finish;
     end
         
